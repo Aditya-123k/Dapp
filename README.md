@@ -1,57 +1,81 @@
-# Sample Hardhat 3 Project (`mocha` and `ethers`)
 
-This project showcases a Hardhat 3 project using `mocha` for tests and the `ethers` library for Ethereum interactions.
+# EscrowX Protocol - Setup Guide
 
-To learn more about Hardhat 3, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3](https://hardhat.org/hardhat3-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+## Requirements
+* **Node.js:** v18 or v20+
+* **MetaMask Extension:** Installed in your browser
 
-## Project Overview
+---
 
-This example project includes:
+## 1. Install Dependencies
+In your terminal, navigate to the project directory and run:
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using `mocha` and ethers.js
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+```bash
+npm install
 
-## Usage
-
-### Running Tests
-
-To run all the tests in the project, execute the following command:
-
-```shell
-npx hardhat test
 ```
 
-You can also selectively run the Solidity or `mocha` tests:
+*(If the frontend is in a nested `/frontend` folder, open a terminal in that folder and run `npm install` there as well).*
 
-```shell
-npx hardhat test solidity
-npx hardhat test mocha
+---
+
+## 2. Start Local Blockchain
+
+Open **Terminal 1** and start the Hardhat local node:
+
+```bash
+npx hardhat node
+
 ```
 
-### Make a deployment to Sepolia
+*Leave this terminal running.*
 
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
+---
 
-To run the deployment to a local chain:
+## 3. Deploy the Smart Contract
 
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
+Open **Terminal 2** and deploy the escrow contract:
+
+```bash
+npx hardhat run scripts/deploy.ts --network localhost
+
 ```
 
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
+> **Note:** If the terminal outputs an address other than `0x5FbDB2315678afecb367f032d93F642f64180aa3`, copy it and update `ESCROW_ADDRESS` in `src/contracts/escrowConfig.ts`.
 
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
+---
 
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
+## 4. Set Up MetaMask
 
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
+1. Add a custom network in MetaMask:
+* **Network Name:** Hardhat Localhost
+* **RPC URL:** `http://127.0.0.1:8545`
+* **Chain ID:** `31337`
+* **Currency Symbol:** `ETH`
+
+
+2. Import the two test accounts (using private keys from Terminal 1):
+* **Account 0 (Client):** `0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`
+* **Account 1 (Freelancer):** `0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d`
+
+
+
+---
+
+## 5. Run the Frontend
+
+In **Terminal 2**, start the development server:
+
+```bash
+npm run dev
+
 ```
 
-After setting the variable, you can run the deployment with the Sepolia network:
+Open `http://localhost:5173` in your browser.
 
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
+```
+
+
+git push origin main
+
 ```
